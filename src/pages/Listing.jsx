@@ -5,8 +5,20 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase.config";
 
 import ShareIcon from "../assets/svg/shareIcon.svg";
-import { toast } from "react-toastify";
+import { Zoom, toast } from "react-toastify";
 import Spinner from "../components/Spinner";
+
+import { MapContainer, Marker, TileLayer, Popup } from "react-leaflet";
+
+// import Swiper core and required modules
+import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/scrollbar";
 
 export default function Listing() {
   const [listing, setListing] = useState(null);
@@ -33,7 +45,32 @@ export default function Listing() {
   }
   return (
     <main>
-      {/* SLIDE SHOW */}
+      <Swiper
+        // install Swiper modules
+        modules={[Navigation, Pagination, Scrollbar, A11y]}
+        spaceBetween={50}
+        navigation
+        pagination={{ clickable: true }}
+        scrollbar={{ draggable: true }}
+        slidesPerView={1}
+      >
+        {listing.imgUrls.map((url, index) => (
+          <SwiperSlide key={index}>
+            <div className="swiperSlideDiv">
+              <img
+                src={url}
+                alt=""
+                style={{
+                  maxHeight: "500px",
+                  width: "100%",
+                  objectFit: "cover",
+                }}
+                // className="swiperSlideImg"
+              />
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
       <div
         className="shareIconDiv"
         onClick={() => {
@@ -54,9 +91,12 @@ export default function Listing() {
         <p className="listingType">
           For {listing.type === "rent" ? "Rent" : "Sale"}
         </p>
-        <p className="discountPrice">
-          $ {listing.offer && listing.discountedPrice} Offer
-        </p>
+        {listing.offer && (
+          <p className="discountPrice">
+            $ {listing.regularPrice - listing.discountedPrice}
+          </p>
+        )}
+
         <ul className="listingDetailsList">
           <li>
             {listing.bedrooms}
@@ -71,9 +111,27 @@ export default function Listing() {
         </ul>
         <p className="listingLocationTitle">Location</p>
         {/* MAP */}
+        <div className="leafletContainer">
+          <MapContainer
+            style={{ height: "100%", width: "100%" }}
+            center={[listing?.geolocation.lat, listing?.geolocation.lng]}
+            zoom={13}
+            scrollWheelZoom={false}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Marker
+              position={[listing?.geolocation.lat, listing?.geolocation.lng]}
+            >
+              <Popup>{listing.location}</Popup>
+            </Marker>
+          </MapContainer>
+        </div>
         {auth.currentUser?.uid !== listing.userRef && (
           <Link
-            to={`/contact/${listing.userRef}?listingLocation=${listing.location}`}
+            to={`/contact/${listing.userRef}?listingName=${listing.name}`}
             className="primaryButton"
           >
             Contact Landlord
