@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import rentCategoryImage from "../assets/jpg/rentCategoryImage.jpg";
 import sellCategoryImage from "../assets/jpg/sellCategoryImage.jpg";
 import Slider from "../components/Slider";
+import arrowRight from "../assets/svg/keyboardArrowRightIcon.svg";
+import homeIcon from "../assets/svg/homeIcon.svg";
 function Explore() {
   return (
     <div className="explore">
@@ -11,7 +13,11 @@ function Explore() {
 
       <main>
         <Slider />
-
+        <Link to="/createlisting" className="createListing">
+          <img src={homeIcon} alt="" />
+          <p>Sell or Rent your home</p>
+          <img src={arrowRight} alt="" />
+        </Link>
         <p className="exploreCategoryHeading">Categories</p>
         <div className="exploreCategories">
           <Link to="/category/rent">
