@@ -13,7 +13,7 @@ function Explore() {
 
       <main>
         <Slider />
-        <Link to="/createlisting" className="createListing">
+        <Link to="/create-listing" className="createListing">
           <img src={homeIcon} alt="" />
           <p>Sell or Rent your home</p>
           <img src={arrowRight} alt="" />

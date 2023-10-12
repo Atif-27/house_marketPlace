@@ -1,28 +1,28 @@
-import { useEffect, useState, useRef } from 'react'
-import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { useEffect, useState, useRef } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-export const useAuthStatus = () => {
-  const [loggedIn, setLoggedIn] = useState(false)
-  const [checkingStatus, setCheckingStatus] = useState(true)
-  const isMounted = useRef(true)
+export function useAuthStatus() {
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [checkingStatus, setCheckingStatus] = useState(true);
+  const isMounted = useRef(true);
 
   useEffect(() => {
     if (isMounted) {
-      const auth = getAuth()
+      const auth = getAuth();
       onAuthStateChanged(auth, (user) => {
         if (user) {
-          setLoggedIn(true)
+          setLoggedIn(true);
         }
-        setCheckingStatus(false)
-      })
+        setCheckingStatus(false);
+      });
     }
 
     return () => {
-      isMounted.current = false
-    }
-  }, [isMounted])
+      isMounted.current = false;
+    };
+  }, [isMounted]);
 
-  return { loggedIn, checkingStatus }
+  return { loggedIn, checkingStatus };
 }
 
 // Protected routes in v6
